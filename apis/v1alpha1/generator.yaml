@@ -8,6 +8,10 @@ resources:
     fields:
       FirewallName: 
         is_primary_key: true
+      LoggingConfiguration:
+        from:
+          operation: UpdateLoggingConfiguration
+          path: LoggingConfiguration          
     exceptions:
       terminal_codes:
       - InvalidRequestException
@@ -20,8 +24,20 @@ resources:
         in:
         - READY
     hooks:
+      delta_pre_compare:
+        code: customPreCompare(a, b)
+      sdk_delete_pre_build_request:
+        template_path: common/sdk_delete_pre_build_request.go.tpl
       sdk_delete_post_request:
         template_path: common/sdk_delete_post_request.go.tpl
+      sdk_create_post_set_output:
+        template_path: common/sdk_create_post_set_output.go.tpl
+      sdk_read_one_post_set_output:
+        template_path: common/sdk_read_many_post_set_output.go.tpl
+      sdk_file_end:
+        template_path: common/sdk_file_end.go.tpl
+    update_operation:
+      custom_method_name: customUpdateFirewall
   FirewallPolicy:
     exceptions:
       terminal_codes:
